@@ -5,6 +5,7 @@ import 'package:mealmate/screens/category_screen.dart';
 import 'package:mealmate/screens/favorites_screen.dart';
 import 'package:mealmate/screens/search_results_screen.dart';
 import 'package:mealmate/screens/meal_details_screen.dart';
+import 'package:mealmate/screens/settings_screen.dart';
 import 'package:mealmate/services/api_service.dart';
 import 'package:provider/provider.dart';
 
@@ -64,7 +65,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),

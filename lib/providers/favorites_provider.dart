@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:mealmate/services/storage_service.dart';
 
@@ -42,5 +44,10 @@ class FavoritesProvider with ChangeNotifier {
 
   List<Map<String, dynamic>> getFavorites(){
     return _meals;
+  }
+
+  bool clearFavorites(){
+    _meals = [];
+    return true;
   }
 }
