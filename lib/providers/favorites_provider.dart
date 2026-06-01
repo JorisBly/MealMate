@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:mealmate/services/storage_service.dart';
+
+import '../models/meal.dart';
 
 
 class FavoritesProvider with ChangeNotifier {
 
-  List<String> _mealsIds = [];
+  List<Map<String, dynamic>> _meals = [];
   late final StorageService _storage;
 
   FavoritesProvider(Future<StorageService> storageFuture) {
@@ -14,27 +18,31 @@ class FavoritesProvider with ChangeNotifier {
   void _loadFromStorage(Future<StorageService> storageFuture) async {
     _storage = await storageFuture;
     final prefs = _storage.loadFavorites();
-    _mealsIds = prefs;
+    _meals = prefs.cast<Map<String, dynamic>>();
     notifyListeners();
   }
 
-  void addToFavorite(String mealId) {
-    _mealsIds.add(mealId);
-    _storage.saveFavorites(_mealsIds);
+  void addToFavorite(Meal meal) {
+    _meals.add(meal.toJson());
+    _storage.saveFavorites(_meals);
     notifyListeners();
   }
 
-  void removeFromFavorite(String mealId){
-    _mealsIds.remove(mealId);
-    _storage.saveFavorites(_mealsIds);
+  void removeFromFavorite(Meal meal){
+    _meals.removeWhere((mealItem) => Meal.fromJson(mealItem).id == meal.id);
+    _storage.saveFavorites(_meals);
     notifyListeners();
   }
 
-  bool isFavorite(String mealId){
-    return _mealsIds.contains(mealId);
+  bool isFavorite(Meal meal){
+    return _meals.any((mealItem) => Meal.fromJson(mealItem).id == meal.id);
   }
 
   int favoritesCount(){
-    return _mealsIds.length;
+    return _meals.length;
+  }
+
+  List<Map<String, dynamic>> getFavorites(){
+    return _meals;
   }
 }

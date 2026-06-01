@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mealmate/models/category.dart';
 import 'package:mealmate/models/meal.dart';
 import 'package:mealmate/screens/category_screen.dart';
+import 'package:mealmate/screens/favorites_screen.dart';
 import 'package:mealmate/screens/search_results_screen.dart';
 import 'package:mealmate/screens/meal_details_screen.dart';
 import 'package:mealmate/services/api_service.dart';
@@ -50,7 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: IconButton(
                   icon: const Icon(Icons.favorite),
                   onPressed: () {
-                    // TODO: Rediriger vers l'écran de la liste des favoris si nécessaire
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FavoritesScreen(),
+                      ),
+                    );
                   },
                 ),
               );
@@ -68,7 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 8),
-            // 1. Barre de recherche
             TextField(
               onSubmitted: (value) {
                 if (value.trim().isNotEmpty) {

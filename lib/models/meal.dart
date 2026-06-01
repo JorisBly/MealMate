@@ -44,4 +44,15 @@ class Meal {
       urlSource: json['strYoutube'] as String?,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'idMeal': id,
+        'strMeal': name,
+        'strCategory': category,
+        'strInstructions': instruction,
+        'strMealThumb': imageUrl,
+        'strYoutube': urlSource,
+        'ingredients': ingredients,
+      };
+
 }
