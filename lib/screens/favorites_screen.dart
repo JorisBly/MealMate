@@ -3,15 +3,16 @@ import 'package:provider/provider.dart';
 import '../models/meal.dart';
 import '../providers/favorites_provider.dart';
 import 'meal_details_screen.dart';
-import '../widgets/meal_card.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final favoritesProvider = context.watch<FavoritesProvider>();
-    final favoriteMeals = favoritesProvider.getFavorites();
+    final theme = Theme.of(context);
+
+    final favoriteMeals = context.watch<FavoritesProvider>().getFavorites();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Vos favoris"),
@@ -35,28 +36,68 @@ class FavoritesScreen extends StatelessWidget {
         ),
       )
           : Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: GridView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: ListView.builder(
           itemCount: favoriteMeals.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.85,
-          ),
           itemBuilder: (context, index) {
-            final meal = favoriteMeals[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MealDetailsScreen(meal: Meal.fromJson(meal)),
+            final meal = Meal.fromJson(favoriteMeals[index]);
+
+            return Card(
+              clipBehavior: Clip.hardEdge,
+              elevation: 2,
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MealDetailsScreen(meal: meal),
+                    ),
+                  );
+                },
+                child: SizedBox(
+                  height: 140,
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Image.network(
+                          meal.imageUrl,
+                          fit: BoxFit.cover,
+                          height: double.infinity,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                meal.name,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              if (meal.category != null) ...[
+                                const SizedBox(height: 6),
+                                Text(
+                                  meal.category!,
+                                  style: TextStyle(color: theme.colorScheme.primary),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                );
-              },
-              child: MealCard(
-                meal: Meal.fromJson(meal),
+                ),
               ),
             );
           },
