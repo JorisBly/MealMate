@@ -36,16 +36,16 @@ class MealDetailsScreen extends StatefulWidget {
         actions: [
           Consumer<FavoritesProvider>(
             builder: (context, favoritesProvider, child) {
-              final isFavorite = favoritesProvider.isFavorite(meal);
+              final isFavorite = favoritesProvider.isFavorite(meal.id);
               return IconButton(
                 icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
                 color: isFavorite ? Colors.red : null,
                 tooltip: isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris',
                 onPressed: () {
                   if (isFavorite) {
-                    favoritesProvider.removeFromFavorite(meal);
+                    favoritesProvider.removeFromFavorite(meal.id);
                   } else {
-                    favoritesProvider.addToFavorite(meal);
+                    favoritesProvider.addToFavorite(meal.id);
                   }
                 },
               );

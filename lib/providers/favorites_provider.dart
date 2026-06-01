@@ -1,22 +1,21 @@
 import 'package:flutter/cupertino.dart';
 
-import '../models/meal.dart';
 
 class FavoritesProvider extends ChangeNotifier {
 
-  final List<Meal> _meals = [];
+  final List<String> _mealsIds = [];
 
-  void addToFavorite(Meal meal) {
-    _meals.add(meal);
+  void addToFavorite(String mealId) {
+    _mealsIds.add(mealId);
     notifyListeners();
   }
 
-  void removeFromFavorite(Meal meal){
-    _meals.remove(meal);
+  void removeFromFavorite(String mealId){
+    _mealsIds.remove(mealId);
     notifyListeners();
   }
 
-  bool isFavorite(Meal meal){
-    return _meals.any((food) => food.id == meal.id);
+  bool isFavorite(String mealId){
+    return _mealsIds.any((mealId) => mealId == mealId);
   }
 }
