@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mealmate/models/category.dart';
 import 'package:mealmate/models/meal.dart';
 import 'package:mealmate/screens/category_screen.dart';
+import 'package:mealmate/screens/search_results_screen.dart';
 import 'package:mealmate/services/api_service.dart';
 import 'package:mealmate/widgets/meal_card.dart';
 
@@ -13,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isSearching = false;
   String _searchInput = "";
 
   final ApiService _apiService = ApiService();
@@ -34,12 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               icon: const Icon(Icons.favorite),
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => const SettingsScreen(),
-                //   ),
-                // );
               },
             ),
             IconButton(
@@ -61,9 +55,15 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextField(
-            onChanged: (value) {
+            onSubmitted: (value) {
               setState(() {
                 _searchInput = value;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>  SearchResultsScreen(searchQuery: _searchInput),
+                  ),
+                );
               });
             },
             decoration: const InputDecoration(
