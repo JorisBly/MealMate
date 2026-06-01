@@ -11,6 +11,7 @@ class StorageService {
   }
 
   static const String _favoritesKey = 'favorites_v1';
+  static const String _darkModeKey = 'darkMode';
 
   List<Map<String, dynamic>> loadFavorites() {
     final List<String> savedStrings = _prefs.getStringList(_favoritesKey) ?? [];
@@ -30,5 +31,18 @@ class StorageService {
 
   Future<bool> clearFavorites() async {
     return await _prefs.setStringList(_favoritesKey, []);
+  }
+
+  Future<bool?> loadDarkMode() async{
+    final result = await _prefs.getBool(_darkModeKey);
+    if(result == null){
+      return false;
+    }else{
+      return result;
+    }
+  }
+
+  Future<bool> saveDarkMode(bool darkMode) async {
+    return await _prefs.setBool(_darkModeKey, darkMode);
   }
 }

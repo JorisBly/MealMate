@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mealmate/providers/favorites_provider.dart';
+import 'package:mealmate/providers/theme_provider.dart';
 import 'package:mealmate/screens/home_screen.dart';
 import 'package:mealmate/services/storage_service.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => FavoritesProvider(StorageService.init())),
+          ChangeNotifierProvider(create: (_) => ThemeProvider(StorageService.init())),
         ],
         child: const MyApp(),
       ),
