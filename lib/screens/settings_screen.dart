@@ -31,7 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(dialogContext).pop(); // Ferme l'AlertDialog sans rien faire
+                Navigator.of(dialogContext).pop();
               },
               child: const Text('Annuler'),
             ),
@@ -71,7 +71,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // --- SECTION 1 : THÈME ---
           Text(
             'Affichage',
             style: theme.textTheme.titleMedium?.copyWith(
@@ -96,7 +95,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 24),
 
-          // --- SECTION 2 : DONNÉES (Action destructive) ---
           Text(
             'Données',
             style: theme.textTheme.titleMedium?.copyWith(
@@ -116,7 +114,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 24),
 
-          // --- SECTION 3 : À PROPOS ---
           Text(
             'À propos',
             style: theme.textTheme.titleMedium?.copyWith(

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:mealmate/services/storage_service.dart';
 
@@ -48,6 +46,8 @@ class FavoritesProvider with ChangeNotifier {
 
   bool clearFavorites(){
     _meals = [];
+    _storage.saveFavorites(_meals);
+    notifyListeners();
     return true;
   }
 }
