@@ -4,11 +4,9 @@ import 'package:mealmate/screens/meal_details_screen.dart';
 import '../models/meal.dart';
 
 class MealCard extends StatelessWidget {
-  const MealCard({super.key, required this.meal, required this.title, required this.imageUrl});
+  const MealCard({super.key, required this.meal});
 
   final Meal meal;
-  final String title;
-  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +26,8 @@ class MealCard extends StatelessWidget {
              );
             },
             child: Image(
-              image: NetworkImage(imageUrl),
-              semanticLabel: this.title,
+              image: NetworkImage(meal.imageUrl),
+              semanticLabel: meal.name,
             ),
           ),
           Positioned(
@@ -40,7 +38,7 @@ class MealCard extends StatelessWidget {
               color: Colors.black54,
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                title,
+                meal.name,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
