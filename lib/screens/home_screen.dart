@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:mealmate/models/category.dart';
 import 'package:mealmate/models/meal.dart';
@@ -6,6 +5,9 @@ import 'package:mealmate/screens/category_screen.dart';
 import 'package:mealmate/screens/search_results_screen.dart';
 import 'package:mealmate/screens/meal_details_screen.dart';
 import 'package:mealmate/services/api_service.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/favorites_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,9 +37,24 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('MealMate'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.favorite),
-            onPressed: () {},
+          Consumer<FavoritesProvider>(
+            builder: (context, favoritesProvider, child) {
+              final count = favoritesProvider.favoritesCount();
+
+              return Badge(
+                label: Text(
+                  '$count',
+                  style: const TextStyle(color: Colors.white, fontSize: 10),
+                ),
+                isLabelVisible: count > 0,
+                child: IconButton(
+                  icon: const Icon(Icons.favorite),
+                  onPressed: () {
+                    // TODO: Rediriger vers l'écran de la liste des favoris si nécessaire
+                  },
+                ),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.settings),
