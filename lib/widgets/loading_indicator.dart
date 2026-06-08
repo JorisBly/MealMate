@@ -6,7 +6,6 @@ class LoadingIndicator extends StatelessWidget {
   final AsyncSnapshot<dynamic> snapshot;
   final String? loadingMessage;
 
-  final IconData? emptyIcon;
   final String? emptyTitle;
   final String? emptyMessage;
 
@@ -16,7 +15,6 @@ class LoadingIndicator extends StatelessWidget {
     super.key,
     required this.snapshot,
     this.loadingMessage,
-    this.emptyIcon,
     this.emptyTitle,
     this.emptyMessage,
     this.onRetry,
@@ -24,14 +22,12 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     if (snapshot.hasError) {
       return EmptyViewPresets.noInternet(
         title: "Erreur de connexion",
         description: "Impossible de joindre le serveur. Vérifie ton réseau.",
       );
     }
-
 
     if (snapshot.connectionState == ConnectionState.waiting) {
       final theme = Theme.of(context);
@@ -55,7 +51,8 @@ class LoadingIndicator extends StatelessWidget {
       );
     }
 
-    if (snapshot.data == null || snapshot.data.isEmpty) {
+    final data = snapshot.data;
+    if (data == null || (data is List && data.isEmpty)) {
       return EmptyViewPresets.noData(
         title: emptyTitle ?? "Aucun résultat",
         description: emptyMessage ?? "Aucune recette trouvée",
@@ -64,14 +61,19 @@ class LoadingIndicator extends StatelessWidget {
       );
     }
 
-
     return const SizedBox.shrink();
   }
 
   static bool checkState(AsyncSnapshot<dynamic> snapshot) {
-    return snapshot.connectionState == ConnectionState.waiting ||
-        snapshot.hasError ||
-        snapshot.data == null ||
-        snapshot.data.isEmpty;
+    if (snapshot.connectionState == ConnectionState.waiting || snapshot.hasError) {
+      return true;
+    }
+
+    final data = snapshot.data;
+    if (data == null || (data is List && data.isEmpty)) {
+      return true;
+    }
+
+    return false;
   }
 }

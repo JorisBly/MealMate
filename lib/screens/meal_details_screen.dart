@@ -61,7 +61,6 @@ class MealDetailsScreen extends StatefulWidget {
             return LoadingIndicator(
               snapshot: snapshot,
               loadingMessage: "Récupération des données...",
-              emptyIcon: Icons.restaurant_menu,
               emptyTitle: "Aucun détail",
               emptyMessage: "Aucun détail disponible pour cette recette.",
             );

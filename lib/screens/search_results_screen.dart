@@ -35,7 +35,6 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             return LoadingIndicator(
               snapshot: snapshot,
               loadingMessage: "Recherche en cours...",
-              emptyIcon: Icons.restaurant_menu,
               emptyTitle: "Aucun résultat",
               emptyMessage: "Nous n'avons trouvé aucun plat correspondant à votre recherche.",
             );

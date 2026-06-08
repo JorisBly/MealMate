@@ -42,7 +42,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
             return LoadingIndicator(
               snapshot: snapshot,
               loadingMessage: "Récupération des données...",
-              emptyIcon: Icons.restaurant_menu,
               emptyTitle: "Catégorie vide",
               emptyMessage: "Aucun plat trouvé pour cette catégorie.",
             );
