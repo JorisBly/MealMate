@@ -35,11 +35,7 @@ class StorageService {
 
   Future<bool?> loadDarkMode() async{
     final result = await _prefs.getBool(_darkModeKey);
-    if(result == null){
-      return false;
-    }else{
-      return result;
-    }
+    return result;
   }
 
   Future<bool> saveDarkMode(bool darkMode) async {
