@@ -25,12 +25,15 @@ class MyApp extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       title: 'MealMate',
+      themeMode: themeProvider.isDarkMode() ?
+          ThemeMode.dark :
+          ThemeMode.light,
       theme: ThemeData(
         colorScheme: .fromSeed(
             seedColor: Colors.deepPurple,
-            brightness: themeProvider.getTheme()
         ),
       ),
+      darkTheme: ThemeData.dark(),
       home: const HomeScreen(),
     );
   }
