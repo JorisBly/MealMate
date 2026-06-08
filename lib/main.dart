@@ -20,13 +20,16 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       title: 'MealMate',
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: .fromSeed(
+            seedColor: Colors.deepPurple,
+            brightness: themeProvider.getTheme()
+        ),
       ),
       home: const HomeScreen(),
     );
