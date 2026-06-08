@@ -1,6 +1,3 @@
-import 'dart:ffi';
-
-import 'package:flutter/foundation.dart';
 
 class Meal {
   final String id;
@@ -9,6 +6,7 @@ class Meal {
   final List<String>? ingredients;
   final String instruction;
   final String imageUrl;
+  final String? country;
   final String? urlSource;
 
   const Meal({
@@ -18,6 +16,7 @@ class Meal {
     required this.ingredients,
     required this.instruction,
     required this.imageUrl,
+    required this.country,
     this.urlSource,
   });
 
@@ -41,6 +40,7 @@ class Meal {
       ingredients: ingredients,
       instruction: json['strInstructions'] as String? ?? '',
       imageUrl: json['strMealThumb'] as String,
+      country: json['strCountry'] as String?,
       urlSource: json['strYoutube'] as String?,
     );
   }
@@ -51,6 +51,7 @@ class Meal {
         'strCategory': category,
         'strInstructions': instruction,
         'strMealThumb': imageUrl,
+        'strCountry': country,
         'strYoutube': urlSource,
         'ingredients': ingredients,
       };
