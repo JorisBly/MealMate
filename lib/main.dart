@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealmate/providers/daily_provider.dart';
 import 'package:mealmate/providers/favorites_provider.dart';
 import 'package:mealmate/providers/theme_provider.dart';
 import 'package:mealmate/screens/home_screen.dart';
@@ -12,6 +13,7 @@ void main() {
         providers: [
           ChangeNotifierProvider(create: (_) => FavoritesProvider(StorageService.init())),
           ChangeNotifierProvider(create: (_) => ThemeProvider(StorageService.init())),
+          ChangeNotifierProvider(create: (_) => DailyProvider(StorageService.init())),
         ],
         child: const MyApp(),
       ),
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
           ThemeMode.dark :
           ThemeMode.light,
       theme: ThemeData(
-        colorScheme: .fromSeed(
+        colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.deepPurple,
         ),
       ),

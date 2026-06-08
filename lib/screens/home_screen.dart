@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mealmate/models/category.dart';
 import 'package:mealmate/models/meal.dart';
+import 'package:mealmate/providers/daily_provider.dart';
 import 'package:mealmate/screens/category_screen.dart';
 import 'package:mealmate/screens/favorites_screen.dart';
 import 'package:mealmate/screens/search_results_screen.dart';
@@ -28,7 +29,29 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _categoriesFuture = _apiService.getCategories();
-    _randomMealFuture = _apiService.getRandomMeal();
+    _randomMealFuture = _initDailyMeal();
+  }
+
+  Future<Meal> _initDailyMeal() async {
+    final dailyProvider = Provider.of<DailyProvider>(context, listen: false);
+    int attempts = 0;
+    while (dailyProvider.getLastDailyMealId() == null &&
+        dailyProvider.getLastDate() == null &&
+        attempts < 10) {
+      await Future.delayed(const Duration(milliseconds: 50));
+      attempts++;
+    }
+    final cachedId = dailyProvider.getLastDailyMealId();
+    final today = DateTime.now().day;
+    final lastDateStr = dailyProvider.getLastDate();
+
+    if (cachedId != null && lastDateStr != null && lastDateStr.day == today) {
+      return await _apiService.getMealById(cachedId);
+    } else {
+      final newRandomMeal = await _apiService.getRandomMeal();
+      dailyProvider.saveDailyMeal(newRandomMeal.id);
+      return newRandomMeal;
+    }
   }
 
   @override
