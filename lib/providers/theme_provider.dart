@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:mealmate/services/storage_service.dart';
 
 class ThemeProvider with ChangeNotifier {
@@ -11,7 +12,14 @@ class ThemeProvider with ChangeNotifier {
 
   void _loadFromStorage(Future<StorageService> storageFuture) async {
     _storage = await storageFuture;
-    _darkMode = await _storage.loadDarkMode() ?? false;
+    var _storagedMode = await _storage.loadDarkMode();
+    if(_storagedMode == null){
+      var brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+      _darkMode = brightness == Brightness.dark ? true : false;
+    }else{
+      _darkMode = _storagedMode;
+    }
+
     notifyListeners();
   }
 
@@ -25,11 +33,5 @@ class ThemeProvider with ChangeNotifier {
     return _darkMode;
   }
 
-  Brightness getTheme(){
-    if(_darkMode){
-      return Brightness.dark;
-    }else{
-      return Brightness.light;
-    }
-  }
+
 }
