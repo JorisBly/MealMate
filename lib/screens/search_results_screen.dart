@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/meal.dart';
 import '../services/api_service.dart';
+import '../widgets/loading_indicator.dart';
 import '../widgets/meal_card.dart';
 
 class SearchResultsScreen extends StatefulWidget {
@@ -30,34 +31,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       body: FutureBuilder<List<Meal>>(
         future: _searchResultsFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text(
-                'Une erreur est survenue lors de la recherche.',
-                style: TextStyle(color: Colors.red),
-              ),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.search_off, size: 64, color: Colors.grey),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Aucun résultat trouvé pour "${widget.searchQuery}".',
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
+          if (LoadingIndicator.checkState(snapshot)) {
+            return LoadingIndicator(
+              snapshot: snapshot,
+              loadingMessage: "Recherche en cours...",
+              emptyIcon: Icons.restaurant_menu,
+              emptyTitle: "Aucun résultat",
+              emptyMessage: "Nous n'avons trouvé aucun plat correspondant à votre recherche.",
             );
           }
 

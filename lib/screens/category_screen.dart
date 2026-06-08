@@ -1,7 +1,9 @@
+import 'package:empty_view/empty_view.dart';
 import 'package:flutter/material.dart';
 import '../models/category.dart';
 import '../models/meal.dart';
 import '../services/api_service.dart';
+import '../widgets/loading_indicator.dart';
 import 'meal_details_screen.dart';
 import '../widgets/meal_card.dart';
 
@@ -36,17 +38,26 @@ class _CategoryScreenState extends State<CategoryScreen> {
       body: FutureBuilder<List<Meal>>(
         future: _mealsFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text("Une erreur est survenue."));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text("Aucune recette disponible dans cette catégorie."),
+          if (LoadingIndicator.checkState(snapshot)) {
+            return LoadingIndicator(
+              snapshot: snapshot,
+              loadingMessage: "Récupération des données...",
+              emptyIcon: Icons.restaurant_menu,
+              emptyTitle: "Catégorie vide",
+              emptyMessage: "Aucun plat trouvé pour cette catégorie.",
             );
           }
 
           final categoryMeals = snapshot.data!;
+
+          if (categoryMeals.isEmpty) {
+            return EmptyViewPresets.noData(
+                title: "Aucune recette",
+                description: "Aucune recette disponible dans cette catégorie.",
+                buttonText: "Retour",
+                onRefresh: () => Navigator.of(context).pop(),
+              );
+          }
 
           return Padding(
             padding: const EdgeInsets.all(12.0),

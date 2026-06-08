@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/meal.dart';
 import '../providers/favorites_provider.dart';
 import '../services/api_service.dart';
+import '../widgets/loading_indicator.dart';
 
 class MealDetailsScreen extends StatefulWidget {
   const MealDetailsScreen({super.key, required this.meal});
@@ -56,13 +57,13 @@ class MealDetailsScreen extends StatefulWidget {
       body: FutureBuilder<Meal>(
         future: _mealFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text("Une erreur est survenue."));
-          } else if (!snapshot.hasData) {
-            return const Center(
-              child: Text("Recette introuvable."),
+          if (LoadingIndicator.checkState(snapshot)) {
+            return LoadingIndicator(
+              snapshot: snapshot,
+              loadingMessage: "Récupération des données...",
+              emptyIcon: Icons.restaurant_menu,
+              emptyTitle: "Aucun détail",
+              emptyMessage: "Aucun détail disponible pour cette recette.",
             );
           }
 

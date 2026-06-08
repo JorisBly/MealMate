@@ -1,3 +1,4 @@
+import 'package:empty_view/empty_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/meal.dart';
@@ -13,29 +14,21 @@ class FavoritesScreen extends StatelessWidget {
 
     final favoriteMeals = context.watch<FavoritesProvider>().getFavorites();
 
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Vos favoris"),
       ),
       body: favoriteMeals.isEmpty
-          ? const Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.favorite_border, size: 64, color: Colors.grey),
-              SizedBox(height: 16),
-              Text(
-                "Vous n'avez pas encore de favoris.",
-                style: TextStyle(fontSize: 18, color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+          ? Center(
+        child: EmptyViewPresets.noData(
+          title: "Aucune recette",
+          description: "Vous n'avez pas encore de recettes favorites.",
+          buttonText: "Retour",
+          onRefresh: () => Navigator.of(context).pop(),
         ),
       )
-          : Padding(
+          :Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         child: ListView.builder(
           itemCount: favoriteMeals.length,
