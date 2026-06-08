@@ -1,9 +1,8 @@
-import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:mealmate/services/storage_service.dart';
 
 class ThemeProvider with ChangeNotifier {
-  late bool? _darkMode = false;
+  late bool _darkMode = false;
   late final StorageService _storage;
 
   ThemeProvider(Future<StorageService> storageFuture){
@@ -12,13 +11,25 @@ class ThemeProvider with ChangeNotifier {
 
   void _loadFromStorage(Future<StorageService> storageFuture) async {
     _storage = await storageFuture;
-    _darkMode = await _storage.loadDarkMode();
+    _darkMode = await _storage.loadDarkMode() ?? false;
     notifyListeners();
   }
 
   void toggleDarkMode(){
-    _darkMode = _darkMode!;
-    _storage.saveDarkMode(_darkMode!);
+    _darkMode = !_darkMode;
+    _storage.saveDarkMode(_darkMode);
     notifyListeners();
+  }
+
+  bool isDarkMode(){
+    return _darkMode;
+  }
+
+  Brightness getTheme(){
+    if(_darkMode){
+      return Brightness.dark;
+    }else{
+      return Brightness.light;
+    }
   }
 }

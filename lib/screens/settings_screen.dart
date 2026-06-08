@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealmate/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/favorites_provider.dart';
 
@@ -10,9 +11,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _isDarkMode = false; // État local temporaire pour le Toggle
 
-  // Fonction pour afficher la boîte de dialogue de confirmation (AlertDialog)
   void _showClearFavoritesDialog(BuildContext context, FavoritesProvider provider) {
     showDialog(
       context: context,
@@ -63,6 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final favoritesProvider = context.watch<FavoritesProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -84,12 +84,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: const Text('Mode sombre'),
               subtitle: const Text('Activer le thème sombre sur toute l\'application'),
               secondary: const Icon(Icons.brightness_6),
-              value: _isDarkMode,
+              value: themeProvider.isDarkMode(),
               onChanged: (bool value) {
-                setState(() {
-                  _isDarkMode = value;
-                });
-                // TODO: Relier au StorageService et à un ThemeProvider pour la persistance globale
+                themeProvider.toggleDarkMode();
               },
             ),
           ),
