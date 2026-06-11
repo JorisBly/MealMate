@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart'; // 1. IMPORT DU PACKAGE
 
 import '../models/meal.dart';
 import '../providers/favorites_provider.dart';
@@ -13,17 +14,30 @@ class MealDetailsScreen extends StatefulWidget {
 
   @override
   State<MealDetailsScreen> createState() => _MealDetailsScreenState();
-
 }
-  class _MealDetailsScreenState extends State<MealDetailsScreen> {
-    final ApiService _apiService = ApiService();
-    late Future<Meal> _mealFuture;
 
-    @override
-    void initState() {
-      super.initState();
-      _mealFuture = _apiService.getMealById(widget.meal.id);
+class _MealDetailsScreenState extends State<MealDetailsScreen> {
+  final ApiService _apiService = ApiService();
+  late Future<Meal> _mealFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _mealFuture = _apiService.getMealById(widget.meal.id);
+  }
+
+  Future<void> _launchVideo(String url, BuildContext context) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Impossible d'ouvrir la vidéo.")),
+        );
+      }
     }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +95,6 @@ class MealDetailsScreen extends StatefulWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -115,7 +128,6 @@ class MealDetailsScreen extends StatefulWidget {
                                 ),
                               ),
                             ),
-
                           if (meal.country != null)
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -147,8 +159,7 @@ class MealDetailsScreen extends StatefulWidget {
 
                       const Divider(height: 32),
 
-                      if (meal.ingredients != null &&
-                          meal.ingredients!.isNotEmpty) ...[
+                      if (meal.ingredients != null && meal.ingredients!.isNotEmpty) ...[
                         _buildSectionTitle(context, "Ingrédients"),
                         const SizedBox(height: 12),
                         Card(
@@ -160,12 +171,10 @@ class MealDetailsScreen extends StatefulWidget {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: meal.ingredients!.length,
-                              separatorBuilder: (context,
-                                  index) => const Divider(height: 1),
+                              separatorBuilder: (context, index) => const Divider(height: 1),
                               itemBuilder: (context, index) {
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Row(
                                     children: [
                                       Icon(
@@ -190,6 +199,26 @@ class MealDetailsScreen extends StatefulWidget {
                         const SizedBox(height: 24),
                       ],
 
+                      if (meal.urlSource != null && meal.urlSource!.isNotEmpty) ...[
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: FilledButton.icon(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: const Color(0xFFFF0000),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () => _launchVideo(meal.urlSource!, context),
+                            icon: const Icon(Icons.play_circle_fill_rounded),
+                            label: const Text(
+                              "Voir la vidéo de la recette",
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+
                       _buildSectionTitle(context, "Instructions"),
                       const SizedBox(height: 12),
                       Text(
@@ -198,7 +227,6 @@ class MealDetailsScreen extends StatefulWidget {
                           height: 1.6,
                         ),
                       ),
-
                       const SizedBox(height: 32),
                     ],
                   ),
@@ -206,8 +234,8 @@ class MealDetailsScreen extends StatefulWidget {
               ],
             ),
           );
-        }
-      )
+        },
+      ),
     );
   }
 

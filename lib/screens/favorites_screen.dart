@@ -5,14 +5,22 @@ import '../models/meal.dart';
 import '../providers/favorites_provider.dart';
 import 'meal_details_screen.dart';
 
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     final favoriteMeals = context.watch<FavoritesProvider>().getFavorites();
+
+    final favoriteProvider = Provider.of<FavoritesProvider>(context);
 
 
     return Scaffold(
@@ -34,8 +42,13 @@ class FavoritesScreen extends StatelessWidget {
           itemCount: favoriteMeals.length,
           itemBuilder: (context, index) {
             final meal = Meal.fromJson(favoriteMeals[index]);
-
-            return Card(
+            return Dismissible(
+              background: Container(color: Colors.red),
+              key: ValueKey<String>(meal.id),
+              onDismissed: (DismissDirection direction) {
+                favoriteProvider.removeFromFavorite(meal);
+              },
+              child: Card(
               clipBehavior: Clip.hardEdge,
               elevation: 2,
               margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -92,7 +105,9 @@ class FavoritesScreen extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
             );
+
           },
         ),
       ),
