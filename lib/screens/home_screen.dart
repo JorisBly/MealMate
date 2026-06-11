@@ -11,6 +11,8 @@ import 'package:mealmate/services/api_service.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/favorites_provider.dart';
+import '../widgets/loading_indicator.dart'; // Import indispensable pour tes états
+import '../widgets/meal_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -78,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FavoritesScreen(),
+                        builder: (context) => const FavoritesScreen(),
                       ),
                     );
                   },
@@ -92,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingsScreen(),
+                  builder: (context) => const SettingsScreen(),
                 ),
               );
             },
@@ -135,78 +137,26 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 10),
 
+            // 1. UTILISATION DE LA MEALCARD POUR LE PLAT DU JOUR (PROPRE ET COMPACT)
             FutureBuilder<Meal>(
               future: _randomMealFuture,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(
-                    height: 150,
-                    child: Center(child: CircularProgressIndicator()),
+                if (LoadingIndicator.checkState(snapshot)) {
+                  return  SizedBox(
+                    height: 140,
+                    child: LoadingIndicator(
+                      snapshot: snapshot,
+                      loadingMessage: "Sélection du plat du jour...",
+                    ),
                   );
-                } else if (snapshot.hasError) {
-                  return const Text("Impossible de charger la découverte du jour.");
-                } else if (!snapshot.hasData) {
-                  return const SizedBox.shrink();
                 }
 
                 final randomMeal = snapshot.data!;
 
-                return Card(
-                  clipBehavior: Clip.hardEdge,
-                  elevation: 2,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MealDetailsScreen(meal: randomMeal),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      height: 140,
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 4,
-                            child: Image.network(
-                              randomMeal.imageUrl,
-                              fit: BoxFit.cover,
-                              height: double.infinity,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 5,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    randomMeal.name,
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  if (randomMeal.category != null) ...[
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      randomMeal.category!,
-                                      style: TextStyle(color: theme.colorScheme.primary),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                return SizedBox(
+                  height: 150,
+                  width: double.infinity,
+                  child: MealCard(meal: randomMeal),
                 );
               },
             ),
@@ -222,12 +172,13 @@ class _HomeScreenState extends State<HomeScreen> {
               child: FutureBuilder<List<Category>>(
                 future: _categoriesFuture,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No categories found'));
+                  if (LoadingIndicator.checkState(snapshot)) {
+                    return LoadingIndicator(
+                      snapshot: snapshot,
+                      loadingMessage: "Chargement des catégories...",
+                      emptyTitle: "Aucune catégorie",
+                      emptyMessage: "Impossible de récupérer les catégories culinaires.",
+                    );
                   }
 
                   final categories = snapshot.data!;
@@ -245,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Card(
                         clipBehavior: Clip.hardEdge,
                         child: InkWell(
-                          splashColor: Colors.blue.withAlpha(30),
+                          splashColor: theme.colorScheme.primary.withAlpha(30),
                           onTap: () {
                             Navigator.push(
                               context,

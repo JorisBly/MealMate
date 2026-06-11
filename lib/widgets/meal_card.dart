@@ -1,54 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:mealmate/screens/meal_details_screen.dart';
-
 import '../models/meal.dart';
+import '../screens/meal_details_screen.dart';
 
 class MealCard extends StatelessWidget {
-  const MealCard({super.key, required this.meal});
-
   final Meal meal;
+
+  const MealCard({super.key, required this.meal});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        child: Stack(
-          children: [
-            InkWell(
-            splashColor: Colors.blue.withAlpha(30),
-            onTap: () {
-             Navigator.push(
-                 context,
-               MaterialPageRoute<void>(
-                 builder: (context) => MealDetailsScreen(meal: meal),
-               ),
-             );
-            },
-            child: Image(
-              image: NetworkImage(meal.imageUrl),
-              semanticLabel: meal.name,
+    final theme = Theme.of(context);
+
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      elevation: 2,
+      child: InkWell(
+        splashColor: theme.colorScheme.primary.withAlpha(30),
+
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MealDetailsScreen(meal: meal),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              color: Colors.black54,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                meal.name,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: double.infinity,
+                child: Image.network(
+                  meal.imageUrl,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          )
-          ],),
 
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    meal.name,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (meal.category != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      meal.category!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
